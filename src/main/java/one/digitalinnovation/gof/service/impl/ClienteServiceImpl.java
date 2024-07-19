@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import one.digitalinnovation.gof.model.Cliente;
-import one.digitalinnovation.gof.model.ClienteRepository;
 import one.digitalinnovation.gof.model.Endereco;
-import one.digitalinnovation.gof.model.EnderecoRepository;
+import one.digitalinnovation.gof.repositories.ClienteRepository;
+import one.digitalinnovation.gof.repositories.EnderecoRepository;
 import one.digitalinnovation.gof.service.ClienteService;
 import one.digitalinnovation.gof.service.ViaCepService;
 
@@ -34,25 +34,24 @@ public class ClienteServiceImpl implements ClienteService {
 	// Facade: Abstrair integrações com subsistemas, provendo uma interface simples.
 
 	@Override
-	public Iterable<Cliente> buscarTodos() {
+	public Iterable<Cliente> getAll() {
 		// Buscar todos os Clientes.
 		return clienteRepository.findAll();
 	}
 
 	@Override
-	public Cliente buscarPorId(Long id) {
+	public Cliente getById(Long id) {
 		// Buscar Cliente por ID.
-		Optional<Cliente> cliente = clienteRepository.findById(id);
-		return cliente.get();
+		return clienteRepository.findById(id).get();
 	}
 
 	@Override
-	public void inserir(Cliente cliente) {
+	public void save(Cliente cliente) {
 		salvarClienteComCep(cliente);
 	}
 
 	@Override
-	public void atualizar(Long id, Cliente cliente) {
+	public void update(Long id, Cliente cliente) {
 		// Buscar Cliente por ID, caso exista:
 		Optional<Cliente> clienteBd = clienteRepository.findById(id);
 		if (clienteBd.isPresent()) {
@@ -61,7 +60,7 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
-	public void deletar(Long id) {
+	public void delete(Long id) {
 		// Deletar Cliente por ID.
 		clienteRepository.deleteById(id);
 	}
@@ -71,7 +70,7 @@ public class ClienteServiceImpl implements ClienteService {
 		String cep = cliente.getEndereco().getCep();
 		Endereco endereco = enderecoRepository.findById(cep).orElseGet(() -> {
 			// Caso não exista, integrar com o ViaCEP e persistir o retorno.
-			Endereco novoEndereco = viaCepService.consultarCep(cep);
+			Endereco novoEndereco = viaCepService.findCEP(cep);
 			enderecoRepository.save(novoEndereco);
 			return novoEndereco;
 		});

@@ -11,14 +11,14 @@ import one.digitalinnovation.gof.model.Cliente;
  */
 public interface ClienteService {
 
-	Iterable<Cliente> buscarTodos();
+	Iterable<Cliente> getAll();
 
-	Cliente buscarPorId(Long id);
+	Cliente getById(Long id);
 
-	void inserir(Cliente cliente);
+	void save(Cliente cliente);
 
-	void atualizar(Long id, Cliente cliente);
+	void update(Long id, Cliente cliente);
 
-	void deletar(Long id);
+	void delete(Long id);
 
 }
